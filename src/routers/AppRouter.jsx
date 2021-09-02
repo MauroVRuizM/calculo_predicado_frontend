@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
+import { Checks } from '../components/Checks';
 import { Facts } from '../components/Facts';
 import { FactsList } from '../components/FactsList';
 import { Navbar } from '../components/Navbar';
@@ -17,6 +18,7 @@ export const AppRouter = () => {
                     <Route path="/rules" component={ Rules } />
                     <Route path="/list/rules" component={ RulesList } />
                     <Route path="/list/facts" component={ FactsList } />
+                    <Route path="/checks" component={ Checks } />
                     <Redirect to="/facts" />
                 </Switch>
             </div>
