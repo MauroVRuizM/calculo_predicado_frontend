@@ -1,5 +1,6 @@
 import React from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import Speech from 'react-speech';
 
 export const Checks = () => {
 
@@ -34,6 +35,11 @@ export const Checks = () => {
                 className="btn btn-outline-info"
             >Reset</button>
             <p>{transcript}</p>
+            <Speech
+                text="Todas las mujeres mienten"
+                lang="en-US"
+                voice="Microsoft Sabina - Spanish (Mexico)"
+            />
         </div>
     )
 }
