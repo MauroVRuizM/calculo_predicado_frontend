@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import Speech from 'react-speech';
 import Swal from 'sweetalert2';
@@ -8,6 +8,8 @@ import { startAskCheck, clearCheck } from '../actions/checks';
 
 export const Checks = () => {
 
+    const [playing, setPlaying] = useState(false);
+    const [loading, setLoading] = useState(false);
     const speechRef = useRef();
     const dispatch = useDispatch();
     const { check } = useSelector( state => state );
@@ -18,18 +20,23 @@ export const Checks = () => {
         if(transcript !== '') {
             let message = `¿ ${transcript} ?`;
             dispatch(startAskCheck(message));
+            setLoading(true);
         }
     }
 
     useEffect(() => {
         if(status === 200) {
+            setLoading(false);
             Swal.fire({
                 position: "top-end",
                 icon: "success",
                 title: "Consulta Exitosa!",
                 showConfirmButton: false,
                 timer: 2000,
-                didClose: () => { speechRef.current.play() }
+                didClose: () => { 
+                    speechRef.current.play();
+                    setPlaying(true);
+                }
             })
         }
     }, [status, response])
@@ -41,7 +48,10 @@ export const Checks = () => {
 
     const handleStop = () => {
         SpeechRecognition.stopListening()
-        speechRef.current.stop();
+        if(playing) {
+            speechRef.current.stop();
+            setPlaying(false);
+        }
     }
 
 
@@ -62,19 +72,19 @@ export const Checks = () => {
             <div className="alert alert-dismissible alert-light">
                 <h1>METAS</h1>
             </div>
-            <p>Microphone: {listening ? 'on' : 'off'}</p>
+            <p>Micrófono: {listening ? 'conectado' : 'apagado'}</p>
             <button 
                 onClick={SpeechRecognition.startListening}
                 className="btn btn-outline-success"
-            >Start</button>
+            >Iniciar</button>
             <button 
                 onClick={handleStop}
                 className="btn btn-outline-danger"
-            >Stop</button>
+            >Parar</button>
             <button 
                 onClick={handleReset}
                 className="btn btn-outline-info"
-            >Reset</button>
+            >Limpiar</button>
             <button 
                 onClick={handleAskCheck}
                 className="btn btn-outline-warning"
@@ -85,7 +95,13 @@ export const Checks = () => {
             <br />
             <h5>Respuesta</h5>
                 {
-                    !!response && response.map((item, index) => {
+                    loading ? 
+                    <div className="container">
+                        <div className="spinner-border text-info" role="status">
+                            <span className="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+                    : !!response && response.map((item, index) => {
                         return (
                             <p key={index}>{item}</p>
                         )
