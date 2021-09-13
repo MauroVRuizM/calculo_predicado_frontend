@@ -90,7 +90,7 @@ export const Rules = () => {
 
     //----------------Cabeceras dinamicas-------------------
 
-    const ccheader = max2.map((index) => {
+    const ccheader = max2.map((item, index) => {
         return (
             <th key={index} scope="col" className="ps-3">
                 {`VARIABLE ${index + 1}`}
@@ -98,7 +98,7 @@ export const Rules = () => {
         );
     });
 
-    const cdheader = max.map((index) => {
+    const cdheader = max.map((item, index) => {
         return (
             <th key={index} scope="col" className="ps-3">
                 {`VARIABLE ${index + 1}`}
