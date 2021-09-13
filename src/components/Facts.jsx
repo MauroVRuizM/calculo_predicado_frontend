@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { startAddFacts } from '../actions/facts';
 export const Facts = () => {
 
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
     const { fact } = useSelector( state => state );
     const [facts, setFacts] = useState([{ predicado: "", sujetos: [""] }]);
     const [max, setMax] = useState([""]);
@@ -15,21 +16,25 @@ export const Facts = () => {
     const { success, msg } = fact;
 
 
-    if(success) {
-        Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: `${msg}`,
-            showConfirmButton: false,
-            timer: 2000,
-            didClose: () => {history.push('/list/facts')}
-        })
-    }
+    useEffect(() => {
+        if(success) {
+            setLoading(false);
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: `${msg}`,
+                showConfirmButton: false,
+                timer: 2000,
+                didClose: () => {history.push('/list/facts')}
+            })
+        }
+    }, [success, msg, history])
 
 
 
     const handleAddFact = () => {
         dispatch(startAddFacts(facts));
+        setLoading(true);
     }
 
     const addFact = () => {
@@ -68,7 +73,7 @@ export const Facts = () => {
 
     // --------- CABECERA DINAMICA DE LA TABLA -------------------------------
 
-    const theader = max.map((index) => {
+    const theader = max.map((item, index) => {
         return (
         <th scope="col" className="ps-3">
             {`SUJETO ${index + 1}`}
@@ -168,6 +173,15 @@ export const Facts = () => {
                 <i className="fas fa-plus-circle me-2"></i>
                 Hecho
             </button>
+            {
+                loading ?
+                <div className="container">
+                    <div className="spinner-border text-info" role="status">
+                        <span className="sr-only">Cargando...</span>
+                    </div>
+                </div>
+                : <p></p>
+            }
             <table className="table">
                 <thead>
                 <tr className="table-dark">

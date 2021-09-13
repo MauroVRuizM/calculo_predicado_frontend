@@ -41,6 +41,12 @@ export const Checks = () => {
         }
     }, [status, response])
 
+
+    const handleStart = () => {
+        handleReset();
+        SpeechRecognition.startListening();
+    }
+
     const handleReset = () => {
         resetTranscript();
         dispatch(clearCheck());
@@ -74,7 +80,7 @@ export const Checks = () => {
             </div>
             <p>Micrófono: {listening ? 'conectado' : 'apagado'}</p>
             <button 
-                onClick={SpeechRecognition.startListening}
+                onClick={ handleStart }
                 className="btn btn-outline-success"
             >Iniciar</button>
             <button 
@@ -94,25 +100,26 @@ export const Checks = () => {
             <p> <strong>{`¿ ${transcript} ?`}</strong> </p>
             <br />
             <h5>Respuesta</h5>
-                {
-                    loading ? 
-                    <div className="container">
-                        <div className="spinner-border text-info" role="status">
-                            <span className="sr-only">Cargando...</span>
-                        </div>
+            {
+                loading ? 
+                <div className="container">
+                    <div className="spinner-border text-info" role="status">
+                        <span className="sr-only">Cargando...</span>
                     </div>
-                    : !!response && response.map((item, index) => {
-                        return (
-                            <p key={index}>{item}</p>
-                        )
-                    })
-                }
+                </div>
+                : !!response && response.map((item, index) => {
+                    return (
+                        <p key={index}>{item}</p>
+                    )
+                })
+            }
             <Speech
                 ref={speechRef}
                 text={ !!response && [...response].toString()}
                 lang="en-US"
                 voice="Microsoft Sabina - Spanish (Mexico)"
             />
+            <i className="fas fa-robot"></i>
         </div>
     )
 }
